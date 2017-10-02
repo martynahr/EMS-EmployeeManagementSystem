@@ -13,7 +13,7 @@ CREATE TABLE log (
     insert into log (login,pass,role) values 
     ('admin','a','admin'),
 	('maja','b','admin'),
-	('user','a','user'),
+	('user','u','user'),
 	('basia','b','user');
     select * from log;
     Select login From log where login='admin';

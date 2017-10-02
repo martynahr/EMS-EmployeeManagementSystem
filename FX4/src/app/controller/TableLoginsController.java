@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import app.model.EmployeeModel;
+import app.model.LoginModel;
 import app.model.TableModel;
 import app.database.DBConnector;
 import javafx.collections.FXCollections;
@@ -19,24 +21,26 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class TableLoginsController {
 	@FXML
     private TableView<TableModel> Table;
+	
     @FXML
-    private TableColumn<TableModel,Integer> tb_id_e;
+    private TableColumn<EmployeeModel,Integer> tb_id_e;
     @FXML
-    private TableColumn<TableModel,String> tb_firstname;
+    private TableColumn<EmployeeModel,String> tb_firstname;
     @FXML
-    private TableColumn<TableModel,String> tb_lastname;
+    private TableColumn<EmployeeModel,String> tb_lastname;
     
     @FXML
-    private TableColumn<TableModel,String> tb_login;
+    private TableColumn<LoginModel,String> tb_login;
 
     @FXML
-    private TableColumn<TableModel,String> tb_pass;
+    private TableColumn<LoginModel,String> tb_pass;
     
     @FXML
     private Button btn_connect;
@@ -58,6 +62,8 @@ public class TableLoginsController {
     private TextField tf_login;
     @FXML
     private TextField tf_pass;
+    @FXML
+    private ImageView iv_back;
 
     
     @FXML
@@ -73,18 +79,26 @@ public class TableLoginsController {
     
     @FXML
     void btncommitactionupd(ActionEvent event) throws ClassNotFoundException, SQLException {
+    	tf_firstname.setDisable(true);
+    	tf_lastname.setDisable(true);
     	java.sql.PreparedStatement preparedStatement= null;
     	int id_update= Table.getSelectionModel().getSelectedItem().getId_e();
     	Connection conn=db.Connection(); 
         
-    	String sql="UPDATE employee_accounts SET login_log=?, pass_log=?, firstName_employee=?,lastName_employee=? where id_e_employee=?";
+    	String sql="UPDATE log SET login=?, pass=? where id=?";
     	preparedStatement=conn.prepareStatement(sql);
     	preparedStatement.setString(1, tf_login.getText());
     	preparedStatement.setString(2, tf_pass.getText());
-    	preparedStatement.setString(3, tf_firstname.getText());
-    	preparedStatement.setString(4, tf_lastname.getText());
-    	preparedStatement.setInt(5, id_update);
+    	preparedStatement.setInt(3, id_update);
     	preparedStatement.executeUpdate();
+    	
+    	String sql1="UPDATE employee SET FirstName=?, LastName=? where id_e=?";
+    	preparedStatement=conn.prepareStatement(sql1);
+    	preparedStatement.setString(1, tf_firstname.getText());
+    	preparedStatement.setString(2, tf_lastname.getText());
+    	preparedStatement.setInt(3, id_update);
+    	preparedStatement.executeUpdate();
+    	
     	tf_firstname.clear();
     	tf_lastname.clear();
     	tf_login.clear();
@@ -96,30 +110,37 @@ public class TableLoginsController {
     void btncommitaction(ActionEvent event) throws ClassNotFoundException, SQLException {
     	java.sql.PreparedStatement preparedStatement= null;
     	Connection conn=db.Connection(); 	
-    	String sql="INSERT into employee_accounts (login_log, pass_log, firstName_employee,lastName_employee) values (?,?,?,?)";
+    	String sql="INSERT into log (login, pass, role) values(?,?,?)";
     	preparedStatement=conn.prepareStatement(sql);
     	preparedStatement.setString(1, tf_login.getText());
     	preparedStatement.setString(2, tf_pass.getText());
-    	preparedStatement.setString(3, tf_firstname.getText());
-    	preparedStatement.setString(4, tf_lastname.getText());
+    	preparedStatement.setString(3, "user");
+    	preparedStatement.executeUpdate();
+
+    	String sql1="INSERT into employee (FirstName, LastName, service1, service2) values (?,?,?,?)";
+    	preparedStatement=conn.prepareStatement(sql1);
+    	preparedStatement.setString(1, tf_firstname.getText());
+    	preparedStatement.setString(2, tf_lastname.getText());
+    	preparedStatement.setString(3, "0");
+    	preparedStatement.setString(4, "0");
     	preparedStatement.executeUpdate();
     	tf_firstname.clear();
     	tf_lastname.clear();
     	tf_login.clear();
     	tf_pass.clear();
     }
-    @FXML
+    @FXML 
     void btndeleteactioc(ActionEvent event) throws SQLException, ClassNotFoundException{
     	java.sql.PreparedStatement preparedStatement= null;
     	int id_del= Table.getSelectionModel().getSelectedItem().getId_e();
     	Connection conn=db.Connection();
     	
-    	String sql= "DELETE FROM employee WHERE id_employee="+id_del+";";
+    	String sql= "DELETE FROM employee WHERE id_e="+id_del+";";
     	preparedStatement=conn.prepareStatement(sql);
     	preparedStatement.executeUpdate();
     }
     
-    @FXML
+    @FXML 
     void action_back(MouseEvent event) throws IOException {
     	Stage stageTable = new Stage();
 		Parent root;
@@ -129,10 +150,11 @@ public class TableLoginsController {
 			stageTable.setScene(scene);
 			stageTable.setTitle("Admin Page");
 			stageTable.show();
+			((Stage)iv_back.getScene().getWindow()).close();
 
     }
 
-    @FXML
+    @FXML 
     void btninsertaction(ActionEvent event) {
     	tf_firstname.clear();
     	tf_lastname.clear();
@@ -149,7 +171,7 @@ public class TableLoginsController {
     	
     }
 
-    @FXML
+    @FXML 
     void btnrefreshaction(ActionEvent event) throws ClassNotFoundException {
 	try{ 
 		Connection conn= db.Connection();
@@ -161,18 +183,19 @@ public class TableLoginsController {
 	}catch (Exception ex){
 		System.out.println("Error"+ ex);
 	}
-	tb_id_e.setCellValueFactory(new PropertyValueFactory<TableModel, Integer>("id_e"));
-	tb_firstname.setCellValueFactory(new PropertyValueFactory<TableModel, String>("firstName"));
-	tb_lastname.setCellValueFactory(new PropertyValueFactory<TableModel, String>("lastName"));
-	tb_login.setCellValueFactory(new PropertyValueFactory<TableModel, String>("login"));
-	tb_pass.setCellValueFactory(new PropertyValueFactory<TableModel, String>("pass"));
+	tb_id_e.setCellValueFactory(new PropertyValueFactory<EmployeeModel, Integer>("id_e"));
+	tb_firstname.setCellValueFactory(new PropertyValueFactory<EmployeeModel, String>("firstName"));
+	tb_lastname.setCellValueFactory(new PropertyValueFactory<EmployeeModel, String>("lastName"));
+	tb_login.setCellValueFactory(new PropertyValueFactory<LoginModel, String>("login"));
+	tb_pass.setCellValueFactory(new PropertyValueFactory<LoginModel, String>("pass"));
     
 	Table.setItems(null);
 	Table.setItems(data);
+	btn_connect.setText("refresh");
     
     }
 
-    @FXML
+    @FXML 
     void btnupdateaction(ActionEvent event) throws ClassNotFoundException, SQLException {
     	tf_firstname.setDisable(false);
     	tf_lastname.setDisable(false);
