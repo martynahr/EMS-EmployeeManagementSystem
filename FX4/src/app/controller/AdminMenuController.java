@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -40,6 +41,7 @@ import javafx.stage.Stage;
 				stageTable.setScene(scene);
 				stageTable.setTitle("Admin View");
 				stageTable.show();
+				((Stage)btn_accounts_mngmnt.getScene().getWindow()).close();
 	    }
 	    
 	    @FXML
@@ -52,31 +54,24 @@ import javafx.stage.Stage;
 				stageTable.setScene(scene);
 				stageTable.setTitle("All data");
 				stageTable.show();
+				((Stage)btn_users_mngmnt.getScene().getWindow()).close();
 
 	    }
 
-	    /*@FXML
-	    void move_to_am(MouseEvent event) throws IOException {
+
+
+	    @FXML
+	    void action_inbox(ActionEvent event) throws IOException {
 	    	Stage stageTable = new Stage();
     		Parent root;
     		
-				root = (Parent) FXMLLoader.load(getClass().getResource("/app/view/TableView.fxml"));
+				root = (Parent) FXMLLoader.load(getClass().getResource("/app/view/InboxView.fxml"));
 				Scene scene = new Scene(root);
 				stageTable.setScene(scene);
-				stageTable.setTitle("Admin View");
+				stageTable.setTitle("Inbox");
 				stageTable.show();
-				
-		*/
+				((Stage)btn_other.getScene().getWindow()).close();
 
-	    
-
-
-	   
-
-	    @FXML
-	    void action_other(MouseEvent event) {
-	    	String txt=lbl_pro.getText();
-	    	lbl_pro.setText("Buy a PRO version :)");
 
 	    }
 	    
@@ -84,7 +79,21 @@ import javafx.stage.Stage;
 	    void action_exit(MouseEvent event) {
 	    	lbl_pro.setText("");
 	    }
+	    @FXML
+	    private ImageView iv_logout;
 
+	    @FXML
+	    void action_logout(MouseEvent event) throws IOException {
+	    	Stage stageTable = new Stage();
+    		Parent root;
+    		
+				root = (Parent) FXMLLoader.load(getClass().getResource("/app/view/LoginView.fxml"));
+				Scene scene = new Scene(root);
+				stageTable.setScene(scene);
+				stageTable.setTitle("Login View");
+				stageTable.show();
+				((Stage)iv_logout.getScene().getWindow()).close();
+	    }
 
 	    @FXML
 	    void exit(ActionEvent event) {

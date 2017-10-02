@@ -87,8 +87,7 @@ public class LoginController {
     
     @FXML
     void action_contact(MouseEvent event) {
-    	String txt=lbl_info.getText();
-    	lbl_info.setText("contact us at: @@@");
+    	lbl_info.setText("Contact us at: @@@@@");
     	
     }
     
@@ -99,11 +98,9 @@ public class LoginController {
 
     @FXML
     void action_help(MouseEvent event) {
-    	String txt=lbl_info.getText();
-    	lbl_info.setText("contact with admin");
+    	lbl_info.setText("Contact with admin");
     }
     
-
 
     @FXML
     private void Login(ActionEvent event)  throws IOException, ClassNotFoundException, SQLException {
@@ -126,10 +123,12 @@ public class LoginController {
 			System.out.println("Successful log in");	
 			System.out.println(getRole());
 			if(getRole().toLowerCase().equals("admin"))
+
 			{
 				System.out.println("You've been logged as an admin");
 	
 				Stage stageTable = new Stage();
+				((Stage)btn_ent.getScene().getWindow()).close();
 	    		Parent root;
 				try {
 					root = (Parent) FXMLLoader.load(getClass().getResource("/app/view/AdminMenu.fxml"));
@@ -137,8 +136,8 @@ public class LoginController {
 					stageTable.setScene(scene);
 					stageTable.setTitle("Admin Page");
 					stageTable.show();
+					((Stage)btn_ent.getScene().getWindow()).close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -147,16 +146,16 @@ public class LoginController {
 			{
 				System.out.println("You've been looged as an user");
 				Stage stageTable = new Stage();
+				((Stage)btn_ent.getScene().getWindow()).close();
 	    		Parent root;
 				try {
 					root = (Parent) FXMLLoader.load(getClass().getResource("/app/view/UserMenu.fxml"));
-					Scene scene = new Scene(root);
+			 		Scene scene = new Scene(root);
 					stageTable.setScene(scene);
 					stageTable.setTitle("User Page");
 					stageTable.show();
-		
+					((Stage)btn_ent.getScene().getWindow()).close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -164,7 +163,6 @@ public class LoginController {
 		}
 		else 
 		{
-			//System.out.println("incorrect data");
 			lbl_i.setText("Incorrect login or pass- try again!");	
 			logF.setText(null);
 			passF.setText(null);
@@ -172,7 +170,6 @@ public class LoginController {
 		}
 
 } catch (SQLException e) {
-	// TODO Auto-generated catch block
 	e.printStackTrace();
 } catch (NullPointerException e) {
 	System.out.println("log in unsuccessful");

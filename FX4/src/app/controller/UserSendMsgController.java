@@ -1,6 +1,13 @@
 package app.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+
+
+
+import app.database.DBConnector;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +42,10 @@ public class UserSendMsgController {
 
     @FXML
     private Label lbl_msg_sent;
+    
+  
+    
+    public DBConnector db;
 
     @FXML
     void action_back(MouseEvent event) throws IOException {
@@ -46,12 +57,28 @@ public class UserSendMsgController {
 			stageTable.setScene(scene);
 			stageTable.setTitle("User Page");
 			stageTable.show();
+			((Stage)iv_back.getScene().getWindow()).close();
     }
 
     @FXML
-    void action_send_msg(MouseEvent event) {
-
+    void action_send_msg(MouseEvent event) throws  ClassNotFoundException,SQLException {
+    	java.sql.PreparedStatement preparedStatement= null;
+    	Connection conn = db.Connection();
+    	String sql="INSERT into messages (msg_from, msg_to, msg_subject, msg_content) values(?,?,?,?)";
+    	preparedStatement=conn.prepareStatement(sql);
+    	preparedStatement.setString(1, tf_send_from.getText());
+    	preparedStatement.setString(2, tf_send_to.getText());
+    	preparedStatement.setString(3, tf_subject.getText());
+    	preparedStatement.setString(4, tf_message.getText());
+    	preparedStatement.executeUpdate();
+    	tf_send_from.clear();
+    	tf_send_to.clear();
+    	tf_subject.clear();
+    	tf_message.clear();
+    	lbl_msg_sent.setText("Your message has been sent!");
+    	
     }
-
-
+    public void initialize(){
+ 	   db=new DBConnector();
+    }
 }
